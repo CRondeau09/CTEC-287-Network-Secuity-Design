@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asymmetric Key Exchange Crossword</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+        
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .grid-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .crossword-grid {
+            display: grid;
+            grid-template-columns: repeat(15, 35px);
+            grid-template-rows: repeat(15, 35px);
+            gap: 1px;
+            background-color: #34495e;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .cell {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #bdc3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .cell.white {
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .cell.white:hover {
+            background-color: #e8f4f8;
+            transform: scale(1.05);
+        }
+        
+        .cell.black {
+            background-color: #2c3e50;
+        }
+        
+        .cell.filled {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .number {
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .clues-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .clues h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .clue-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .clue-list li {
+            margin-bottom: 12px;
+            padding: 8px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .clue-list li:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .clue-number {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-right: 8px;
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .instructions h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        
+        .check-button {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,184,148,0.3);
+        }
+        
+        .check-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,184,148,0.4);
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            background: transparent;
+            outline: none;
+        }
+        
+        @media (max-width: 768px) {
+            .puzzle-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .crossword-grid {
+                grid-template-columns: repeat(15, 25px);
+                grid-template-rows: repeat(15, 25px);
+            }
+            
+            .cell {
+                width: 25px;
+                height: 25px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Asymmetric Key Exchange</h1>
+        <p class="subtitle">Network Security Crossword Challenge</p>
+        
+        <div class="instructions">
+            <h3>📝 Instructions</h3>
+            <p>Fill in the crossword puzzle using terms from the asymmetric key exchange lesson. Click on white squares to enter letters. All answers relate to public key cryptography, key exchange protocols, and network security concepts.</p>
+        </div>
+
+        <div class="puzzle-container">
+            <div class="grid-container">
+                <div class="crossword-grid" id="crosswordGrid"></div>
+            </div>
+            
+            <div class="clues-section">
+                <div class="clues">
+                    <h3>🔤 ACROSS</h3>
+                    <ul class="clue-list">
+                        <li><span class="clue-number">1.</span> Key that everyone can see (6)</li>
+                        <li><span class="clue-number">4.</span> Mathematical problem underlying RSA (13)</li>
+                        <li><span class="clue-number">7.</span> Protocol for secure key agreement (6)</li>
+                        <li><span class="clue-number">9.</span> Secret value known only to owner (7)</li>
+                        <li><span class="clue-number">11.</span> Certificate authority acronym (2)</li>
+                        <li><span class="clue-number">12.</span> Cryptosystem invented by Rivest, Shamir, and Adleman (3)</li>
+                        <li><span class="clue-number">13.</span> Attack where adversary intercepts communication (4,2,3,6)</li>
+                    </ul>
+                    
+                    <h3>🔤 DOWN</h3>
+                    <ul class="clue-list">
+                        <li><span class="clue-number">2.</span> Function easy to compute but hard to reverse (3,3)</li>
+                        <li><span class="clue-number">3.</span> Elliptic ____ cryptography (5)</li>
+                        <li><span class="clue-number">5.</span> Temporary keys for forward secrecy (9)</li>
+                        <li><span class="clue-number">6.</span> Secure transport layer protocol (3)</li>
+                        <li><span class="clue-number">8.</span> Digital document proving identity (11)</li>
+                        <li><span class="clue-number">10.</span> Quantum algorithm threatening RSA (5)</li>
+                        <li><span class="clue-number">14.</span> Secure shell protocol (3)</li>
+                    </ul>
+                </div>
+                
+                <button class="check-button" onclick="checkAnswers()">✅ Check Answers</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Define the crossword structure
+        const gridSize = 15;
+        const words = [
+            // ACROSS
+            {word: "PUBLIC", row: 1, col: 1, direction: "across", number: 1, clue: "Key that everyone can see"},
+            {word: "FACTORIZATION", row: 3, col: 2, direction: "across", number: 4, clue: "Mathematical problem underlying RSA"},
+            {word: "DIFFIE", row: 5, col: 4, direction: "across", number: 7, clue: "Protocol for secure key agreement"},
+            {word: "PRIVATE", row: 7, col: 2, direction: "across", number: 9, clue: "Secret value known only to owner"},
+            {word: "CA", row: 9, col: 6, direction: "across", number: 11, clue: "Certificate authority acronym"},
+            {word: "RSA", row: 11, col: 8, direction: "across", number: 12, clue: "Cryptosystem invented by Rivest, Shamir, and Adleman"},
+            {word: "MANINTHEMIDDLE", row: 13, col: 1, direction: "across", number: 13, clue: "Attack where adversary intercepts communication"},
+            
+            // DOWN
+            {word: "ONEWAY", row: 1, col: 3, direction: "down", number: 2, clue: "Function easy to compute but hard to reverse"},
+            {word: "CURVE", row: 2, col: 8, direction: "down", number: 3, clue: "Elliptic ____ cryptography"},
+            {word: "EPHEMERAL", row: 3, col: 6, direction: "down", number: 5, clue: "Temporary keys for forward secrecy"},
+            {word: "TLS", row: 2, col: 12, direction: "down", number: 6, clue: "Secure transport layer protocol"},
+            {word: "CERTIFICATE", row: 1, col: 10, direction: "down", number: 8, clue: "Digital document proving identity"},
+            {word: "SHORS", row: 8, col: 4, direction: "down", number: 10, clue: "Quantum algorithm threatening RSA"},
+            {word: "SSH", row: 11, col: 14, direction: "down", number: 14, clue: "Secure shell protocol"}
+        ];
+
+        // Initialize grid
+        let grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
+        let answerGrid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
+        let numberGrid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(0));
+
+        // Place words in the grid
+        words.forEach(wordObj => {
+            const {word, row, col, direction, number} = wordObj;
+            numberGrid[row-1][col-1] = number;
+            
+            for (let i = 0; i < word.length; i++) {
+                if (direction === "across") {
+                    answerGrid[row-1][col-1+i] = word[i];
+                } else {
+                    answerGrid[row-1+i][col-1] = word[i];
+                }
+            }
+        });
+
+        // Create the HTML grid
+        function createGrid() {
+            const gridContainer = document.getElementById('crosswordGrid');
+            
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    
+                    if (answerGrid[row][col]) {
+                        cell.classList.add('white');
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.maxLength = 1;
+                        input.dataset.row = row;
+                        input.dataset.col = col;
+                        input.addEventListener('input', handleInput);
+                        cell.appendChild(input);
+                        
+                        if (numberGrid[row][col] > 0) {
+                            const number = document.createElement('div');
+                            number.className = 'number';
+                            number.textContent = numberGrid[row][col];
+                            cell.appendChild(number);
+                        }
+                    } else {
+                        cell.classList.add('black');
+                    }
+                    
+                    gridContainer.appendChild(cell);
+                }
+            }
+        }
+
+        function handleInput(e) {
+            const input = e.target;
+            input.value = input.value.toUpperCase();
+            
+            // Move to next cell
+            const row = parseInt(input.dataset.row);
+            const col = parseInt(input.dataset.col);
+            
+            if (input.value && col < gridSize - 1) {
+                const nextCell = document.querySelector(`input[data-row="${row}"][data-col="${col + 1}"]`);
+                if (nextCell) nextCell.focus();
+            }
+        }
+
+        function checkAnswers() {
+            let correct = 0;
+            let total = 0;
+            
+            const inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(input => {
+                const row = parseInt(input.dataset.row);
+                const col = parseInt(input.dataset.col);
+                const correctAnswer = answerGrid[row][col];
+                
+                total++;
+                
+                if (input.value.toUpperCase() === correctAnswer) {
+                    input.parentElement.classList.add('filled');
+                    input.style.color = 'white';
+                    correct++;
+                } else {
+                    input.parentElement.classList.remove('filled');
+                    input.style.color = 'black';
+                }
+            });
+            
+            const percentage = Math.round((correct / total) * 100);
+            let message = '';
+            
+            if (percentage === 100) {
+                message = `🎉 Perfect! You got all ${correct} answers correct! You're a cryptography master!`;
+            } else if (percentage >= 80) {
+                message = `🌟 Excellent! You got ${correct} out of ${total} correct (${percentage}%). Almost there!`;
+            } else if (percentage >= 60) {
+                message = `👍 Good job! You got ${correct} out of ${total} correct (${percentage}%). Keep studying!`;
+            } else {
+                message = `📚 You got ${correct} out of ${total} correct (${percentage}%). Review the lesson material and try again!`;
+            }
+            
+            alert(message);
+        }
+
+        // Initialize the puzzle
+        createGrid();
+    </script>
+</body>
+</html>
