@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Selector Spinning Wheel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .wheel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            grid-column: 1 / -1;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .input-section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .spin-btn {
+            font-size: 18px;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .spin-btn:hover {
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .student-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .student-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s ease;
+        }
+
+        .student-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        .wheel {
+            width: 300px;
+            height: 300px;
+            border: 8px solid #333;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .wheel-segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #ff6b6b;
+            z-index: 10;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .result {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            color: #155724;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .result p {
+            color: #155724;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .wheel {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Student Selector Wheel</h1>
+        
+        <div class="controls">
+            <div class="input-section">
+                <h3>Add Students</h3>
+                <div class="input-group">
+                    <input type="text" id="studentName" placeholder="Enter student name..." maxlength="50">
+                    <button onclick="addStudent()">Add</button>
+                </div>
+                <button onclick="clearAll()" style="width: 100%; background: linear-gradient(45deg, #dc3545, #c82333);">Clear All</button>
+            </div>
+
+            <div class="input-section">
+                <h3>Students (<span id="studentCount">0</span>)</h3>
+                <div class="student-list" id="studentList">
+                    <div style="text-align: center; color: #6c757d; font-style: italic; padding: 20px;">
+                        No students added yet
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wheel-container">
+            <div class="wheel" id="wheel">
+                <div class="pointer"></div>
+                <div id="emptyWheel" class="empty-state">
+                    <p>Add students to spin the wheel!</p>
+                </div>
+            </div>
+            <button class="spin-btn" onclick="spinWheel()" id="spinBtn" disabled>🎲 Spin the Wheel!</button>
+            
+            <div class="result" id="result">
+                <h3>🎉 Selected Student:</h3>
+                <p id="selectedStudent"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let students = [];
+        let isSpinning = false;
+
+        const colors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+            '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+            '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D5A6BD'
+        ];
+
+        function addStudent() {
+            const nameInput = document.getElementById('studentName');
+            const name = nameInput.value.trim();
+            
+            if (name && !students.includes(name)) {
+                students.push(name);
+                nameInput.value = '';
+                updateStudentList();
+                updateWheel();
+                updateSpinButton();
+            } else if (students.includes(name)) {
+                alert('This student is already in the list!');
+            }
+        }
+
+        function removeStudent(index) {
+            students.splice(index, 1);
+            updateStudentList();
+            updateWheel();
+            updateSpinButton();
+        }
+
+        function clearAll() {
+            if (students.length > 0 && confirm('Are you sure you want to remove all students?')) {
+                students = [];
+                updateStudentList();
+                updateWheel();
+                updateSpinButton();
+                hideResult();
+            }
+        }
+
+        function updateStudentList() {
+            const listContainer = document.getElementById('studentList');
+            const countElement = document.getElementById('studentCount');
+            
+            countElement.textContent = students.length;
+            
+            if (students.length === 0) {
+                listContainer.innerHTML = '<div style="text-align: center; color: #6c757d; font-style: italic; padding: 20px;">No students added yet</div>';
+            } else {
+                listContainer.innerHTML = students.map((student, index) => `
+                    <div class="student-item">
+                        <span>${student}</span>
+                        <button class="remove-btn" onclick="removeStudent(${index})">×</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function updateWheel() {
+            const wheel = document.getElementById('wheel');
+            const emptyWheel = document.getElementById('emptyWheel');
+            
+            if (students.length === 0) {
+                wheel.innerHTML = '<div class="pointer"></div><div class="empty-state"><p>Add students to spin the wheel!</p></div>';
+                return;
+            }
+
+            emptyWheel.style.display = 'none';
+            
+            const segmentAngle = 360 / students.length;
+            let wheelHTML = '<div class="pointer"></div>';
+            
+            students.forEach((student, index) => {
+                const rotation = segmentAngle * index;
+                const color = colors[index % colors.length];
+                
+                wheelHTML += `
+                    <div class="wheel-segment" style="
+                        transform: rotate(${rotation}deg) skewY(${90 - segmentAngle}deg);
+                        background: ${color};
+                    ">
+                        <span style="
+                            transform: skewY(${segmentAngle - 90}deg) rotate(${segmentAngle/2}deg);
+                            display: block;
+                        ">${student}</span>
+                    </div>
+                `;
+            });
+            
+            wheel.innerHTML = wheelHTML;
+        }
+
+        function updateSpinButton() {
+            const spinBtn = document.getElementById('spinBtn');
+            spinBtn.disabled = students.length === 0 || isSpinning;
+        }
+
+        function spinWheel() {
+            if (students.length === 0 || isSpinning) return;
+            
+            isSpinning = true;
+            updateSpinButton();
+            hideResult();
+            
+            const wheel = document.getElementById('wheel');
+            const segmentAngle = 360 / students.length;
+            
+            // Generate random spin (multiple rotations + random final position)
+            const minSpins = 4;
+            const maxSpins = 8;
+            const spins = Math.floor(Math.random() * (maxSpins - minSpins + 1)) + minSpins;
+            const finalAngle = Math.random() * 360;
+            const totalRotation = (spins * 360) + finalAngle;
+            
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
+            
+            setTimeout(() => {
+                // Calculate which segment the pointer is on
+                const normalizedAngle = (360 - (totalRotation % 360)) % 360;
+                const selectedIndex = Math.floor(normalizedAngle / segmentAngle);
+                const selectedStudent = students[selectedIndex];
+                
+                showResult(selectedStudent);
+                isSpinning = false;
+                updateSpinButton();
+            }, 4000);
+        }
+
+        function showResult(student) {
+            const resultDiv = document.getElementById('result');
+            const selectedStudentSpan = document.getElementById('selectedStudent');
+            
+            selectedStudentSpan.textContent = student;
+            resultDiv.classList.add('show');
+        }
+
+        function hideResult() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('show');
+        }
+
+        // Allow Enter key to add students
+        document.getElementById('studentName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addStudent();
+            }
+        });
+
+        // Initialize
+        updateStudentList();
+        updateWheel();
+        updateSpinButton();
+    </script>
+</body>
+</html>
