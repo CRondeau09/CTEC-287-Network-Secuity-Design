@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Bloom's Taxonomy Lesson</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .pyramid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 40px 0;
+            perspective: 1000px;
+        }
+
+        .level {
+            background: white;
+            margin: 5px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .level:hover::before {
+            left: 100%;
+        }
+
+        .level:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .level.active {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .level-6 { width: 95%; background: linear-gradient(135deg, #8b5cf6, #a855f7); color: white; }
+        .level-5 { width: 90%; background: linear-gradient(135deg, #06d6a0, #1dd1a1); color: white; }
+        .level-4 { width: 85%; background: linear-gradient(135deg, #f093fb, #f5576c); color: white; }
+        .level-3 { width: 80%; background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; }
+        .level-2 { width: 75%; background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; }
+        .level-1 { width: 70%; background: linear-gradient(135deg, #fa709a, #fee140); color: white; }
+
+        .level-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .level-description {
+            font-size: 1.1em;
+            text-align: center;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .keyword {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .activity-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .activity-section.active {
+            display: block;
+        }
+
+        .activity-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .interactive-area {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .question {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .option {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #d1ecf1;
+            transform: translateX(5px);
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .feedback {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .example-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .drag-area {
+            min-height: 100px;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .drag-area.drag-over {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .draggable {
+            background: #667eea;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: move;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .draggable:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .level {
+                width: 100% !important;
+                margin: 10px 0;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Bloom's Taxonomy Interactive Lesson</h1>
+            <p>Explore the six levels of cognitive learning objectives</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="pyramid" id="pyramid">
+            <div class="level level-6" data-level="6">
+                <div class="level-title">6. CREATE</div>
+                <div class="level-description">Generate new ideas, products, or ways of viewing things</div>
+                <div class="keywords">
+                    <span class="keyword">Design</span>
+                    <span class="keyword">Construct</span>
+                    <span class="keyword">Plan</span>
+                    <span class="keyword">Produce</span>
+                    <span class="keyword">Invent</span>
+                </div>
+            </div>
+
+            <div class="level level-5" data-level="5">
+                <div class="level-title">5. EVALUATE</div>
+                <div class="level-description">Make judgments about the value of ideas or materials</div>
+                <div class="keywords">
+                    <span class="keyword">Judge</span>
+                    <span class="keyword">Critique</span>
+                    <span class="keyword">Assess</span>
+                    <span class="keyword">Compare</span>
+                    <span class="keyword">Justify</span>
+                </div>
+            </div>
+
+            <div class="level level-4" data-level="4">
+                <div class="level-title">4. ANALYZE</div>
+                <div class="level-description">Break down material into component parts</div>
+                <div class="keywords">
+                    <span class="keyword">Examine</span>
+                    <span class="keyword">Break down</span>
+                    <span class="keyword">Compare</span>
+                    <span class="keyword">Contrast</span>
+                    <span class="keyword">Categorize</span>
+                </div>
+            </div>
+
+            <div class="level level-3" data-level="3">
+                <div class="level-title">3. APPLY</div>
+                <div class="level-description">Use information in new situations</div>
+                <div class="keywords">
+                    <span class="keyword">Use</span>
+                    <span class="keyword">Demonstrate</span>
+                    <span class="keyword">Solve</span>
+                    <span class="keyword">Show</span>
+                    <span class="keyword">Implement</span>
+                </div>
+            </div>
+
+            <div class="level level-2" data-level="2">
+                <div class="level-title">2. UNDERSTAND</div>
+                <div class="level-description">Comprehend the meaning of information</div>
+                <div class="keywords">
+                    <span class="keyword">Explain</span>
+                    <span class="keyword">Describe</span>
+                    <span class="keyword">Summarize</span>
+                    <span class="keyword">Interpret</span>
+                    <span class="keyword">Classify</span>
+                </div>
+            </div>
+
+            <div class="level level-1" data-level="1">
+                <div class="level-title">1. REMEMBER</div>
+                <div class="level-description">Recall facts and basic concepts</div>
+                <div class="keywords">
+                    <span class="keyword">List</span>
+                    <span class="keyword">Define</span>
+                    <span class="keyword">Name</span>
+                    <span class="keyword">Identify</span>
+                    <span class="keyword">Recall</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Sections -->
+        <div class="activity-section" id="activity-1">
+            <div class="activity-title">🧠 Level 1: REMEMBER</div>
+            <div class="interactive-area">
+                <div class="question">What are the six levels of Bloom's Taxonomy? (Select all that apply)</div>
+                <div class="options" id="remember-options">
+                    <div class="option" data-correct="true">Remember</div>
+                    <div class="option" data-correct="true">Understand</div>
+                    <div class="option" data-correct="false">Memorize</div>
+                    <div class="option" data-correct="true">Apply</div>
+                    <div class="option" data-correct="true">Analyze</div>
+                    <div class="option" data-correct="false">Synthesize</div>
+                    <div class="option" data-correct="true">Evaluate</div>
+                    <div class="option" data-correct="true">Create</div>
+                </div>
+                <div class="feedback" id="remember-feedback"></div>
+            </div>
+            <div class="example-box">
+                <div class="example-title">💡 Example:</div>
+                <p>"List the capitals of European countries" - This requires students to recall memorized facts.</p>
+            </div>
+        </div>
+
+        <div class="activity-section" id="activity-2">
+            <div class="activity-title">💡 Level 2: UNDERSTAND</div>
+            <div class="interactive-area">
+                <div class="question">Which statement best demonstrates understanding?</div>
+                <div class="options" id="understand-options">
+                    <div class="option" data-correct="false">Paris is the capital of France</div>
+                    <div class="option" data-correct="true">Photosynthesis converts sunlight into chemical energy that plants use for growth</div>
+                    <div class="option" data-correct="false">The formula for water is H2O</div>
+                    <div class="option" data-correct="false">Shakespeare wrote Romeo and Juliet</div>
+                </div>
+                <div class="feedback" id="understand-feedback"></div>
+            </div>
+            <div class="example-box">
+                <div class="example-title">💡 Example:</div>
+                <p>"Explain why plants need sunlight" - This requires comprehension of the process, not just memorization.</p>
+            </div>
+        </div>
+
+        <div class="activity-section" id="activity-3">
+            <div class="activity-title">🛠️ Level 3: APPLY</div>
+            <div class="interactive-area">
+                <div class="question">A student learned that area = length × width. Now they need to find the area of their classroom floor. This is an example of:</div>
+                <div class="options" id="apply-options">
+                    <div class="option" data-correct="false">Remembering the formula</div>
+                    <div class="option" data-correct="false">Understanding what area means</div>
+                    <div class="option" data-correct="true">Applying the formula to solve a real problem</div>
+                    <div class="option" data-correct="false">Analyzing different measurement methods</div>
+                </div>
+                <div class="feedback" id="apply-feedback"></div>
+            </div>
+            <div class="example-box">
+                <div class="example-title">💡 Example:</div>
+                <p>"Use the Pythagorean theorem to find the height of a tree" - Taking learned concepts and using them in new situations.</p>
+            </div>
+        </div>
+
+        <div class="activity-section" id="activity-4">
+            <div class="activity-title">🔍 Level 4: ANALYZE</div>
+            <div class="interactive-area">
+                <div class="question">Drag the analysis activities to the correct category:</div>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div>
+                        <h4>Analysis Activities:</h4>
+                        <div class="draggable" draggable="true" data-category="analyze">Compare themes in two novels</div>
+                        <div class="draggable" draggable="true" data-category="other">Memorize vocabulary words</div>
+                        <div class="draggable" draggable="true" data-category="analyze">Break down a complex equation</div>
+                        <div class="draggable" draggable="true" data-category="other">Create a new story</div>
+                        <div class="draggable" draggable="true" data-category="analyze">Identify cause and effect relationships</div>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4>Analysis Tasks:</h4>
+                        <div class="drag-area" id="analyze-drop" data-accept="analyze">Drop analysis activities here</div>
+                        <h4>Other Tasks:</h4>
+                        <div class="drag-area" id="other-drop" data-accept="other">Drop non-analysis activities here</div>
+                    </div>
+                </div>
+                <div class="feedback" id="analyze-feedback"></div>
+            </div>
+        </div>
+
+        <div class="activity-section" id="activity-5">
+            <div class="activity-title">⚖️ Level 5: EVALUATE</div>
+            <div class="interactive-area">
+                <div class="question">Which question requires evaluation skills?</div>
+                <div class="options" id="evaluate-options">
+                    <div class="option" data-correct="false">What is climate change?</div>
+                    <div class="option" data-correct="false">How does greenhouse effect work?</div>
+                    <div class="option" data-correct="true">Which renewable energy source would be most effective for your city and why?</div>
+                    <div class="option" data-correct="false">List three types of renewable energy</div>
+                </div>
+                <div class="feedback" id="evaluate-feedback"></div>
+            </div>
+            <div class="example-box">
+                <div class="example-title">💡 Example:</div>
+                <p>"Critique this research paper's methodology" - Making judgments based on criteria and standards.</p>
+            </div>
+        </div>
+
+        <div class="activity-section" id="activity-6">
+            <div class="activity-title">🎨 Level 6: CREATE</div>
+            <div class="interactive-area">
+                <div class="question">Design a mini-lesson plan for teaching one concept. What would you include?</div>
+                <textarea id="create-input" style="width: 100%; height: 150px; padding: 10px; border-radius: 8px; border: 1px solid #ddd; resize: vertical;" placeholder="Describe your lesson plan here... Include: topic, learning objective, activities, and assessment method."></textarea>
+                <button class="btn" onclick="evaluateCreation()" style="margin-top: 10px;">Submit Your Creation</button>
+                <div class="feedback" id="create-feedback"></div>
+            </div>
+            <div class="example-box">
+                <div class="example-title">💡 Example:</div>
+                <p>"Design an experiment to test water quality" - Generating original work that combines elements in new ways.</p>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <button class="btn" id="prevBtn" onclick="previousActivity()">← Previous</button>
+            <button class="btn" id="nextBtn" onclick="nextActivity()">Next →</button>
+            <button class="btn" id="finishBtn" onclick="finishLesson()" style="display: none;">🎉 Finish Lesson</button>
+        </div>
+    </div>
+
+    <script>
+        let currentActivity = 0;
+        let completedActivities = new Set();
+        let totalActivities = 6;
+
+        // Initialize the lesson
+        document.addEventListener('DOMContentLoaded', function() {
+            showActivity(1);
+            updateProgress();
+            setupEventListeners();
+            setupDragAndDrop();
+        });
+
+        function setupEventListeners() {
+            // Pyramid level clicks
+            document.querySelectorAll('.level').forEach(level => {
+                level.addEventListener('click', function() {
+                    const levelNum = parseInt(this.dataset.level);
+                    showActivity(levelNum);
+                    this.classList.add('active');
+                    setTimeout(() => this.classList.remove('active'), 1000);
+                });
+            });
+
+            // Multiple choice options
+            setupMultipleChoice('remember-options', 'remember-feedback', 1);
+            setupMultipleChoice('understand-options', 'understand-feedback', 2);
+            setupMultipleChoice('apply-options', 'apply-feedback', 3);
+            setupMultipleChoice('evaluate-options', 'evaluate-feedback', 5);
+        }
+
+        function setupMultipleChoice(optionsId, feedbackId, activityNum) {
+            const options = document.getElementById(optionsId);
+            const feedback = document.getElementById(feedbackId);
+            
+            if (!options) return;
+
+            options.addEventListener('click', function(e) {
+                if (e.target.classList.contains('option')) {
+                    const isCorrect = e.target.dataset.correct === 'true';
+                    
+                    // For remember activity (multiple correct answers)
+                    if (activityNum === 1) {
+                        e.target.classList.toggle(isCorrect ? 'correct' : 'incorrect');
+                        
+                        const correctOptions = options.querySelectorAll('[data-correct="true"]');
+                        const selectedCorrect = options.querySelectorAll('.correct');
+                        const selectedIncorrect = options.querySelectorAll('.incorrect');
+                        
+                        if (selectedCorrect.length === correctOptions.length && selectedIncorrect.length === 0) {
+                            feedback.innerHTML = '🎉 Excellent! You identified all six levels correctly!';
+                            feedback.classList.add('show');
+                            completedActivities.add(activityNum);
+                            updateProgress();
+                        } else if (selectedIncorrect.length > 0) {
+                            feedback.innerHTML = '❌ Some selections are incorrect. The six levels are: Remember, Understand, Apply, Analyze, Evaluate, Create.';
+                            feedback.classList.add('show');
+                        }
+                    } else {
+                        // Single answer questions
+                        options.querySelectorAll('.option').forEach(opt => {
+                            opt.classList.remove('correct', 'incorrect');
+                        });
+                        
+                        e.target.classList.add(isCorrect ? 'correct' : 'incorrect');
+                        
+                        if (isCorrect) {
+                            feedback.innerHTML = generateCorrectFeedback(activityNum);
+                            completedActivities.add(activityNum);
+                        } else {
+                            feedback.innerHTML = generateIncorrectFeedback(activityNum);
+                        }
+                        
+                        feedback.classList.add('show');
+                        updateProgress();
+                    }
+                }
+            });
+        }
+
+        function generateCorrectFeedback(activityNum) {
+            const feedback = {
+                2: '🎉 Correct! This shows understanding by explaining the process, not just stating facts.',
+                3: '🎉 Perfect! This demonstrates applying learned knowledge to solve a new problem.',
+                5: '🎉 Excellent! This requires making judgments and providing justification based on criteria.'
+            };
+            return feedback[activityNum] || '🎉 Correct!';
+        }
+
+        function generateIncorrectFeedback(activityNum) {
+            const feedback = {
+                2: '❌ Try again. Look for the answer that explains a process or concept, not just a fact.',
+                3: '❌ Not quite. Application involves using learned knowledge in new situations to solve problems.',
+                5: '❌ Evaluation requires making judgments and providing reasons. Look for the question asking "which is best and why?"'
+            };
+            return feedback[activityNum] || '❌ Try again!';
+        }
+
+        function setupDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropAreas = document.querySelectorAll('.drag-area');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', e.target.textContent);
+                    e.dataTransfer.setData('category', e.target.dataset.category);
+                    e.target.style.opacity = '0.5';
+                });
+
+                draggable.addEventListener('dragend', function(e) {
+                    e.target.style.opacity = '1';
+                });
+            });
+
+            dropAreas.forEach(area => {
+                area.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    area.classList.add('drag-over');
+                });
+
+                area.addEventListener('dragleave', function(e) {
+                    area.classList.remove('drag-over');
+                });
+
+                area.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    area.classList.remove('drag-over');
+                    
+                    const text = e.dataTransfer.getData('text/plain');
+                    const category = e.dataTransfer.getData('category');
+                    const acceptedCategory = area.dataset.accept;
+                    
+                    if (category === acceptedCategory) {
+                        area.innerHTML += `<div class="draggable" style="background: #28a745; margin: 5px;">${text}</div>`;
+                        checkAnalyzeCompletion();
+                    } else {
+                        const feedback = document.getElementById('analyze-feedback');
+                        feedback.innerHTML = '❌ That item doesn\'t belong in this category. Think about what analysis involves.';
+                        feedback.classList.add('show');
+                    }
+                });
+            });
+        }
+
+        function checkAnalyzeCompletion() {
+            const analyzeDropped = document.getElementById('analyze-drop').children.length;
+            const otherDropped = document.getElementById('other-drop').children.length;
+            
+            if (analyzeDropped >= 3 && otherDropped >= 2) {
+                const feedback = document.getElementById('analyze-feedback');
+                feedback.innerHTML = '🎉 Great job! You correctly identified analysis activities that involve breaking down and examining components.';
+                feedback.classList.add('show');
+                completedActivities.add(4);
+                updateProgress();
+            }
+        }
+
+        function evaluateCreation() {
+            const input = document.getElementById('create-input').value.trim();
+            const feedback = document.getElementById('create-feedback');
+            
+            if (input.length < 50) {
+                feedback.innerHTML = '💭 Try to be more detailed! Include topic, learning objective, activities, and assessment.';
+            } else {
+                feedback.innerHTML = '🎉 Excellent! You\'ve created an original lesson plan by combining various educational elements. This demonstrates the CREATE level perfectly!';
+                completedActivities.add(6);
+                updateProgress();
+            }
+            
+            feedback.classList.add('show');
+        }
+
+        function showActivity(activityNum) {
+            // Hide all activities
+            document.querySelectorAll('.activity-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected activity
+            const activity = document.getElementById(`activity-${activityNum}`);
+            if (activity) {
+                activity.classList.add('active');
+                currentActivity = activityNum;
+                updateNavigationButtons();
+            }
+        }
+
+        function nextActivity() {
+            if (currentActivity < totalActivities) {
+                showActivity(currentActivity + 1);
+            }
+        }
+
+        function previousActivity() {
+            if (currentActivity > 1) {
+                showActivity(currentActivity - 1);
+            }
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const finishBtn = document.getElementById('finishBtn');
+            
+            prevBtn.disabled = currentActivity === 1;
+            
+            if (currentActivity === totalActivities) {
+                nextBtn.style.display = 'none';
+                finishBtn.style.display = 'inline-block';
+            } else {
+                nextBtn.style.display = 'inline-block';
+                finishBtn.style.display = 'none';
+            }
+        }
+
+        function updateProgress() {
+            const progress = (completedActivities.size / totalActivities) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function finishLesson() {
+            const completionRate = (completedActivities.size / totalActivities) * 100;
+            let message = '';
+            
+            if (completionRate === 100) {
+                message = '🎉 Congratulations! You\'ve mastered all levels of Bloom\'s Taxonomy! You\'re ready to design engaging learning experiences.';
+            } else if (completionRate >= 80) {
+                message = '👏 Great job! You have a solid understanding of Bloom\'s Taxonomy. Consider reviewing the levels you haven\'t completed yet.';
+            } else {
+                message = '📚 Good start! Take some time to explore the remaining levels to deepen your understanding of Bloom\'s Taxonomy.';
+            }
+            
+            alert(message + `\n\nYou completed ${completedActivities.size} out of ${totalActivities} activities (${Math.round(completionRate)}%).`);
+        }
