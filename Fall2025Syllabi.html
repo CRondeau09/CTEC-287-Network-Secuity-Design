@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTEC 287 Network Security Design - Interactive Syllabus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            background: rgba(0,0,0,0.2);
+            text-align: center;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #ecf0f1;
+        }
+
+        .sidebar-header p {
+            font-size: 0.9em;
+            color: #bdc3c7;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            margin: 0;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 15px 25px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #3498db;
+            padding-left: 30px;
+        }
+
+        .nav-link.active {
+            background: rgba(52, 152, 219, 0.3);
+            border-left-color: #3498db;
+            font-weight: 600;
+        }
+
+        .nav-link::before {
+            content: '▶';
+            position: absolute;
+            left: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-link.active::before,
+        .nav-link:hover::before {
+            opacity: 1;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        .section {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            margin: -40px -40px 30px -40px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .section-header h2 {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .section-header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .info-card h3 {
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .info-card p {
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .schedule-table th {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .schedule-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        .schedule-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .schedule-table tr:hover {
+            background: #e3f2fd;
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+
+        .week-number {
+            background: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-block;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .alert {
+            padding: 20px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .alert.important {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            border-left-color: #e74c3c;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            border-left-color: #17a2b8;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            height: 100%;
+            width: 0%;
+            transition: width 1s ease-in-out;
+            border-radius: 4px;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #3498db;
+        }
+
+        .contact-icon {
+            font-size: 1.2em;
+            color: #3498db;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+
+        .current-week {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            font-weight: 600;
+        }
+
+        .grade-scale {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .grade-item {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .grade-a { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .grade-b { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .grade-c { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .grade-d { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .scroll-indicator:hover {
+            transform: scale(1.1);
+            background: #2980b9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>CTEC 287</h1>
+                <p>Network Security Design</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#overview" class="nav-link active" data-section="overview">Course Overview</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#instructor" class="nav-link" data-section="instructor">Instructor Info</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#grading" class="nav-link" data-section="grading">Grading & Assessment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#attendance" class="nav-link" data-section="attendance">Attendance Policy</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#schedule" class="nav-link" data-section="schedule">Course Schedule</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#technology" class="nav-link" data-section="technology">Technology Requirements</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#policies" class="nav-link" data-section="policies">Academic Policies</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#support" class="nav-link" data-section="support">Student Support</a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <!-- Course Overview Section -->
+            <section id="overview" class="section active">
+                <div class="section-header">
+                    <h2>Course Overview</h2>
+                    <p>CTEC 287 - Network Security Design</p>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>COVID-19 Protocols</h3>
+                        <p>Follow safety expectations outlined in the Student Handbook COVID-19 section. Current protocols at: bpcc.edu/student-handbook/covid19</p>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Netiquette Guidelines</h3>
+                        <p>• Never post profanity, racist, or sexist messages<br>
+                        • Be respectful of fellow students and instructors<br>
+                        • Never insult any person or their message content<br>
+                        • Never plagiarize or publish intellectual property<br>
+                        • Do not use text messaging abbreviations<br>
+                        • Do not type in all CAPS (online yelling)</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Grade Posting Timeline</h3>
+                        <p>Grades typically posted within 36-72 hours of submission</p>
+                    </div>
+                </div>
+
+                <div class="alert important">
+                    <strong>Financial Aid Students:</strong> Consult financial aid rules before withdrawing. Visit bpcc.edu/admissions/financial-aid for more information.
+                </div>
+            </section>
+
+            <!-- Support Section -->
+            <section id="support" class="section">
+                <div class="section-header">
+                    <h2>Student Support Services</h2>
+                    <p>Resources available for your academic success</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>BPCC Learning Commons</h3>
+                        <p><strong>Website:</strong> bpcc.edu/learning-commons<br>
+                        Comprehensive support services for student success</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Library Services</h3>
+                        <p><strong>Chat Line:</strong> libguides.bpcc.edu/chat<br>
+                        <strong>Reference Help:</strong> bpcc.libcal.com/appointments<br>
+                        <strong>Email:</strong> refdesk@bpcc.edu<br>
+                        <strong>Phone:</strong> 318-678-6275</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Tutoring Center</h3>
+                        <p><strong>Tutoring:</strong> bpcc.libcal.com/appointments<br>
+                        <strong>Writing Support:</strong> bpcc.edu/current-students/writing-lab<br>
+                        <strong>Phone:</strong> 318-678-6059</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Proctoring Services</h3>
+                        <p><strong>Location:</strong> Library Classroom (A-149)<br>
+                        For online course testing and make-up exams<br>
+                        Contact instructor to arrange sessions</p>
+                    </div>
+                </div>
+
+                <div class="alert info">
+                    <strong>Electronic Proctoring:</strong> Library Classroom cannot accommodate ProctorU/Proctorio exams. Private study rooms available for electronic proctoring services.
+                </div>
+
+                <div class="info-card">
+                    <h3>Progress Tracking</h3>
+                    <p>Track your course progress through the semester:</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="courseProgress"></div>
+                    </div>
+                    <p id="progressText">Week 5 of 16 - 31% Complete</p>
+                </div>
+            </section>
+        </main>
+
+        <div class="scroll-indicator" id="scrollTop">↑</div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section');
+            const scrollIndicator = document.getElementById('scrollTop');
+            const progressFill = document.getElementById('courseProgress');
+
+            // Set initial progress (Week 5 of 16)
+            const currentWeek = 5;
+            const totalWeeks = 16;
+            const progressPercent = (currentWeek / totalWeeks) * 100;
+            
+            if (progressFill) {
+                setTimeout(() => {
+                    progressFill.style.width = progressPercent + '%';
+                }, 500);
+            }
+
+            // Navigation click handlers
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all nav links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Add active class to clicked link
+                    this.classList.add('active');
+                    
+                    // Hide all sections
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // Show target section
+                    const targetSection = this.getAttribute('data-section');
+                    const target = document.getElementById(targetSection);
+                    if (target) {
+                        target.classList.add('active');
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            // Scroll indicator functionality
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 200) {
+                    scrollIndicator.style.display = 'block';
+                } else {
+                    scrollIndicator.style.display = 'none';
+                }
+            });
+
+            scrollIndicator.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Enhanced table row interactions
+            const tableRows = document.querySelectorAll('.schedule-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+
+            // Dynamic date highlighting for current week
+            const today = new Date();
+            const currentDate = today.getDate();
+            const currentMonth = today.getMonth(); // 0-based (September = 8)
+            
+            // Highlight current week (Week 5: Sep 7-13)
+            if (currentMonth === 8 && currentDate >= 7 && currentDate <= 13) {
+                const week5Row = tableRows[4]; // 0-based index
+                if (week5Row) {
+                    week5Row.classList.add('current-week');
+                }
+            }
+
+            // Info card hover effects
+            const infoCards = document.querySelectorAll('.info-card');
+            infoCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Interactive grade scale
+            const gradeItems = document.querySelectorAll('.grade-item');
+            gradeItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Create a temporary highlight effect
+                    this.style.transform = 'scale(1.1)';
+                    this.style.transition = 'transform 0.2s ease';
+                    
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            });
+
+            // Auto-update progress tracking
+            function updateProgress() {
+                const now = new Date();
+                const startDate = new Date('2024-08-10'); // Course start date
+                const endDate = new Date('2024-12-06'); // Course end date
+                
+                const totalDuration = endDate - startDate;
+                const elapsed = now - startDate;
+                const progressPercent = Math.min(Math.max((elapsed / totalDuration) * 100, 0), 100);
+                
+                const currentWeekNum = Math.ceil(progressPercent / 100 * 16);
+                
+                if (progressFill) {
+                    progressFill.style.width = progressPercent + '%';
+                }
+                
+                const progressText = document.getElementById('progressText');
+                if (progressText) {
+                    progressText.textContent = `Week ${currentWeekNum} of 16 - ${Math.round(progressPercent)}% Complete`;
+                }
+            }
+
+            // Update progress on page load and periodically
+            updateProgress();
+            setInterval(updateProgress, 60000); // Update every minute
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const activeLink = document.querySelector('.nav-link.active');
+                    const allLinks = Array.from(navLinks);
+                    const currentIndex = allLinks.indexOf(activeLink);
+                    
+                    let nextIndex;
+                    if (e.key === 'ArrowUp') {
+                        nextIndex = currentIndex > 0 ? currentIndex - 1 : allLinks.length - 1;
+                    } else {
+                        nextIndex = currentIndex < allLinks.length - 1 ? currentIndex + 1 : 0;
+                    }
+                    
+                    allLinks[nextIndex].click();
+                }
+            });
+
+            // Add subtle animations to alerts
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach((alert, index) => {
+                alert.style.opacity = '0';
+                alert.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    alert.style.transition = 'all 0.5s ease';
+                    alert.style.opacity = '1';
+                    alert.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+
+            // Contact info click to copy functionality
+            const contactItems = document.querySelectorAll('.contact-item');
+            contactItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const text = this.textContent.trim();
+                    if (navigator.clipboard && window.isSecureContext) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            // Show temporary feedback
+                            const originalBg = this.style.background;
+                            this.style.background = '#d4edda';
+                            this.style.borderLeftColor = '#28a745';
+                            
+                            setTimeout(() => {
+                                this.style.background = originalBg;
+                                this.style.borderLeftColor = '#3498db';
+                            }, 1000);
+                        });
+                    }
+                });
+            });
+
+            // Week number click functionality for schedule
+            const weekNumbers = document.querySelectorAll('.week-number');
+            weekNumbers.forEach(weekNum => {
+                weekNum.addEventListener('click', function() {
+                    // Highlight the entire row temporarily
+                    const row = this.closest('tr');
+                    const originalBg = row.style.backgroundColor;
+                    
+                    row.style.backgroundColor = '#fff3cd';
+                    row.style.transition = 'background-color 0.3s ease';
+                    
+                    setTimeout(() => {
+                        row.style.backgroundColor = originalBg;
+                    }, 1500);
+                });
+            });
+        });
+
+        // Print functionality
+        function printSyllabus() {
+            window.print();
+        }
+
+        // Add print styles
+        const printStyles = `
+            @media print {
+                .sidebar { display: none; }
+                .main-content { padding: 20px; }
+                .section { display: block !important; page-break-after: always; }
+                .section:last-child { page-break-after: auto; }
+                .scroll-indicator { display: none; }
+                body { background: white; }
+            }
+        `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = printStyles;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+</html>d">
+                        <h3>Course Focus</h3>
+                        <p>This course is aligned with CompTIA Security+ certification and prepares students for national cybersecurity standards.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Course Materials</h3>
+                        <p>All texts and labs are delivered through CompTIA CertMaster with 1 year of access for certification preparation.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Certification Goal</h3>
+                        <p>Students are expected to complete the CompTIA Security+ certification exam by the end of the semester.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Lab Requirements</h3>
+                        <p>37 total labs available - students must complete 20 labs minimum (all recommended for exam preparation).</p>
+                    </div>
+                </div>
+
+                <div class="alert important">
+                    <strong>Important:</strong> CompTIA Security+ Certification Exam is REQUIRED as part of your final grade.
+                </div>
+
+                <div class="alert info">
+                    <strong>Note:</strong> You have 1 year of access to CertMaster - save your links as Canvas access expires at term end.
+                </div>
+            </section>
+
+            <!-- Instructor Info Section -->
+            <section id="instructor" class="section">
+                <div class="section-header">
+                    <h2>Instructor Information</h2>
+                    <p>Get in touch and find office hours</p>
+                </div>
+
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span class="contact-icon">👨‍🏫</span>
+                        <div>
+                            <strong>Chris Rondeau</strong><br>
+                            Instructor
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📧</span>
+                        <div>
+                            <strong>Email:</strong><br>
+                            <a href="mailto:crondeau@bpcc.edu">crondeau@bpcc.edu</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📞</span>
+                        <div>
+                            <strong>Phone:</strong><br>
+                            318-678-6317
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">🏢</span>
+                        <div>
+                            <strong>Office:</strong><br>
+                            Room G-120
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <h3>Office Hours</h3>
+                    <p><strong>Monday/Wednesday/Thursday/Friday:</strong> 9:00-9:30 AM<br>
+                    <strong>Monday/Wednesday:</strong> 3:00-4:00 PM<br>
+                    <strong>Tuesday/Thursday:</strong> 9:00 AM-12:00 PM<br>
+                    <strong>Friday:</strong> 8:30 AM-12:00 PM<br>
+                    <strong>Virtual Advising:</strong> By appointment only (12:00-1:30 PM)</p>
+                    <div class="alert">
+                        <strong>Note:</strong> Office hours are subject to change. Check Canvas for most current schedule.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Grading Section -->
+            <section id="grading" class="section">
+                <div class="section-header">
+                    <h2>Grading & Assessment</h2>
+                    <p>Understanding your grade calculation</p>
+                </div>
+
+                <div class="grade-scale">
+                    <div class="grade-item grade-a">
+                        <div>A</div>
+                        <div>90-100%</div>
+                    </div>
+                    <div class="grade-item grade-b">
+                        <div>B</div>
+                        <div>80-89%</div>
+                    </div>
+                    <div class="grade-item grade-c">
+                        <div>C</div>
+                        <div>70-79%</div>
+                    </div>
+                    <div class="grade-item grade-d">
+                        <div>D</div>
+                        <div>60-69%</div>
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Grade Calculation</h3>
+                        <p>Grades = (Points Earned) / (Points Possible)<br>
+                        Final grades recorded in BPCC's LoLA system</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Late Work Policy</h3>
+                        <p>Lose one letter grade per day late (up to 4 days)<br>
+                        After 4 days: Zero grade<br>
+                        Weekends count in deduction period</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Grade Transfer</h3>
+                        <p>CertMaster to Canvas transfers may take up to 36 hours</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Testing Procedures</h3>
+                        <p>Multiple choice, short answer, fill-in-blank, matching, true/false, and hands-on production tests</p>
+                    </div>
+                </div>
+
+                <div class="alert important">
+                    <strong>Canvas Grade Warning:</strong> Canvas attendance affects displayed average - the Canvas average is NOT correct for final grades.
+                </div>
+
+                <div class="alert">
+                    <strong>Makeup Tests:</strong> Contact instructor immediately for missed tests. Makeup tests available during last week of class for excused absences only.
+                </div>
+            </section>
+
+            <!-- Attendance Section -->
+            <section id="attendance" class="section">
+                <div class="section-header">
+                    <h2>Attendance Policy</h2>
+                    <p>Attendance requirements and procedures</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Face-to-Face Classes</h3>
+                        <p>3 tardies = 1 absence<br>
+                        Leaving early = absent for the day<br>
+                        Notify instructor by phone/email for planned absences</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Online Classes</h3>
+                        <p>Complete course introduction assignment in first week<br>
+                        Weekly attendance through assignment submission<br>
+                        Must actively participate by start date</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>15% Rule</h3>
+                        <p>Missing 15% of course may result in College-Initiated Withdrawal with "WN" grade</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>No Show Policy</h3>
+                        <p>Must attend/participate by first class meeting<br>
+                        Online: Complete assignment within 24 hours<br>
+                        No Show = responsible for 100% tuition/fees</p>
+                    </div>
+                </div>
+
+                <div class="alert important">
+                    <strong>Instructor Policy:</strong> I DO NOT REMOVE SUSPENSIONS. Contact me beforehand for planned absences.
+                </div>
+
+                <div class="alert info">
+                    <strong>Excused Absences:</strong> School-sanctioned activities, military exercises, court appearances, or physician-documented conditions require official documentation.
+                </div>
+            </section>
+
+            <!-- Schedule Section -->
+            <section id="schedule" class="section">
+                <div class="section-header">
+                    <h2>Course Schedule</h2>
+                    <p>16-Week Term - All work due Thursdays at 11:59 PM CST</p>
+                </div>
+
+                <div class="alert">
+                    <strong>Work Policy:</strong> You may work ahead, but NO late work is accepted. Week runs Sunday-Saturday.
+                </div>
+
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Dates</th>
+                            <th>Assignments & Requirements</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="week-number">1</span></td>
+                            <td>Aug 10-16</td>
+                            <td>
+                                • Read Getting Started & Course Info in Canvas<br>
+                                • CertMaster Learn Welcome Link<br>
+                                • Register for CAVSalert (new students)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">2</span></td>
+                            <td>Aug 17-23</td>
+                            <td>
+                                • Read Lessons 1 & 2<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">3</span></td>
+                            <td>Aug 24-30</td>
+                            <td>
+                                • Read Lesson 3<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">4</span></td>
+                            <td>Aug 31 - Sep 6</td>
+                            <td>
+                                • Read Lesson 4<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr class="current-week">
+                            <td><span class="week-number">5</span></td>
+                            <td>Sep 7-13</td>
+                            <td>
+                                • Read Lesson 5<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">6</span></td>
+                            <td>Sep 14-20</td>
+                            <td>
+                                • Read Lesson 6<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">7</span></td>
+                            <td>Sep 21-27</td>
+                            <td>
+                                • Read Lesson 7<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">8</span></td>
+                            <td>Sep 28 - Oct 4</td>
+                            <td>
+                                • Read Lesson 8<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">9</span></td>
+                            <td>Oct 5-11</td>
+                            <td>
+                                • Read Lesson 9<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">10</span></td>
+                            <td>Oct 12-18</td>
+                            <td>
+                                • Read Lesson 10<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">11</span></td>
+                            <td>Oct 19-25</td>
+                            <td>
+                                • Read Lesson 11<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">12</span></td>
+                            <td>Oct 26 - Nov 1</td>
+                            <td>
+                                • Read Lesson 12<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">13</span></td>
+                            <td>Nov 2-8</td>
+                            <td>
+                                • Read Lesson 13<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">14</span></td>
+                            <td>Nov 9-15</td>
+                            <td>
+                                • Read Lesson 14<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">15</span></td>
+                            <td>Nov 16-22</td>
+                            <td>
+                                • Read Lessons 15 & 16<br>
+                                • Complete Practice Questions & LAB(s)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="week-number">16</span></td>
+                            <td>Nov 30 - Dec 6</td>
+                            <td>
+                                • <strong>DEADLINE:</strong> ALL Student Work by Dec 1st 8AM<br>
+                                • CompTIA Security+ Final Assessment<br>
+                                • <strong>CompTIA Security+ Certification Exam (REQUIRED)</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert important">
+                    <strong>Final Deadline:</strong> December 1st at 8:00 AM - NO EXTENSIONS
+                </div>
+            </section>
+
+            <!-- Technology Section -->
+            <section id="technology" class="section">
+                <div class="section-header">
+                    <h2>Technology Requirements</h2>
+                    <p>Essential technology for course success</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Hardware Requirements</h3>
+                        <p>• High-speed Internet access<br>
+                        • Windows/OS (latest version with updates)<br>
+                        • Webcam (for virtual meetings)<br>
+                        • Microphone (for virtual meetings)</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Software Requirements</h3>
+                        <p>• Web Browser compatible with myBPCC Canvas<br>
+                        • Course-required software<br>
+                        • Other applicable software as needed</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Support Contact</h3>
+                        <p><strong>24/7 Support:</strong> 844-408-6456<br>
+                        <strong>myBPCC Help:</strong> Click Help button in Canvas<br>
+                        <strong>Email:</strong> mybpcc@bpcc.edu</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>BPCC Tech Support</h3>
+                        <p><strong>Educational Technology:</strong> 318.678.6023<br>
+                        <strong>Hours:</strong> Normal business hours<br>
+                        <strong>Canvas Orientation Available</strong></p>
+                    </div>
+                </div>
+
+                <div class="alert info">
+                    <strong>Canvas Orientation:</strong> Complete the myBPCC Canvas Orientation to learn navigation and features.
+                </div>
+            </section>
+
+            <!-- Policies Section -->
+            <section id="policies" class="section">
+                <div class="section-header">
+                    <h2>Academic Policies</h2>
+                    <p>Important policies and procedures</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Academic Integrity</h3>
+                        <p>Students must follow the Academic Integrity policy in the Student Handbook. Violations result in disciplinary sanctions.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Section 504 & ADA</h3>
+                        <p><strong>Contact:</strong> Angie Cao, Disability Services<br>
+                        <strong>Location:</strong> Room F254<br>
+                        <strong>Phone:</strong> 318-678-6511<br>
+                        <strong>Email:</strong> acao@bpcc.edu</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Due Process</h3>
+                        <p>Discuss concerns first with instructor, then with Division Dean. Formal grievance procedures available in Student Handbook.</p>
+                    </div>
+                    <div class="info-car
