@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSI Model - 7 Layers Explained</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .layers-container {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 15px;
+        }
+        
+        .layer {
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 6px solid;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .layer:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .layer-7 { background: #e8f5e8; border-color: #27ae60; }
+        .layer-6 { background: #fff3e0; border-color: #f39c12; }
+        .layer-5 { background: #fce4ec; border-color: #e91e63; }
+        .layer-4 { background: #e3f2fd; border-color: #2196f3; }
+        .layer-3 { background: #f3e5f5; border-color: #9c27b0; }
+        .layer-2 { background: #fff8e1; border-color: #ff9800; }
+        .layer-1 { background: #ffebee; border-color: #f44336; }
+        
+        .layer-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .layer-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-right: 20px;
+            opacity: 0.3;
+            min-width: 60px;
+        }
+        
+        .layer-title {
+            flex: 1;
+        }
+        
+        .layer-name {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .layer-subtitle {
+            font-size: 1em;
+            opacity: 0.7;
+            margin: 5px 0 0 0;
+        }
+        
+        .layer-content {
+            margin-left: 80px;
+            line-height: 1.6;
+        }
+        
+        .layer-description {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        
+        .protocols {
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .protocols h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .protocol-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .protocol-tag {
+            background: rgba(52, 73, 94, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .examples {
+            background: rgba(255,255,255,0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .examples h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .mnemonic {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+        
+        .data-flow {
+            background: #ecf0f1;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .flow-arrow {
+            font-size: 2em;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .layer-content {
+                margin-left: 0;
+            }
+            
+            .layer-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .layer-number {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>OSI Model - 7 Layers</h1>
+            <p>Open Systems Interconnection Reference Model</p>
+        </div>
+        
+        <div class="mnemonic">
+            <strong>Memory Device:</strong> "Please Do Not Throw Sausage Pizza Away"<br>
+            <em>Physical → Data Link → Network → Transport → Session → Presentation → Application</em>
+        </div>
+        
+        <div class="layers-container">
+            <div class="layer layer-7">
+                <div class="layer-header">
+                    <div class="layer-number">7</div>
+                    <div class="layer-title">
+                        <h2 class="layer-name">Application Layer</h2>
+                        <p class="layer-subtitle">User Interface</p>
+                    </div>
+                </div>
+                <div class="layer-content">
+                    <div class="layer-description">
+                        The closest layer to the end user. Provides network services directly to applications and end-users. This is where user interaction with the network begins.
+                    </div>
+                    <div class="protocols">
+                        <h4>Common Protocols:</h4>
+                        <div class="protocol-list">
+                            <span class="protocol-tag">HTTP/HTTPS</span>
+                            <span class="protocol-tag">FTP</span>
+                            <span class="protocol-tag">SMTP</span>
+                            <span class="protocol-tag">POP3</span>
+                            <span class="protocol-tag">IMAP</span>
+                            <span class="protocol-tag">DNS</span>
+                            <span class="protocol-tag">DHCP</span>
+                            <span class="protocol-tag">Telnet</span>
+                            <span class="protocol-tag">SSH</span>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <h4>Real-World Examples:</h4>
+                        Web browsers, email clients, file transfer applications, remote desktop software
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layer layer-6">
+                <div class="layer-header">
+                    <div class="layer-number">6</div>
+                    <div class="layer-title">
+                        <h2 class="layer-name">Presentation Layer</h2>
+                        <p class="layer-subtitle">Data Translation & Encryption</p>
+                    </div>
+                </div>
+                <div class="layer-content">
+                    <div class="layer-description">
+                        Translates data formats, handles encryption/decryption, and compression/decompression. Ensures data from the application layer can be read by the receiving system.
+                    </div>
+                    <div class="protocols">
+                        <h4>Functions & Protocols:</h4>
+                        <div class="protocol-list">
+                            <span class="protocol-tag">SSL/TLS</span>
+                            <span class="protocol-tag">JPEG</span>
+                            <span class="protocol-tag">GIF</span>
+                            <span class="protocol-tag">PNG</span>
+                            <span class="protocol-tag">MPEG</span>
+                            <span class="protocol-tag">ASCII</span>
+                            <span class="protocol-tag">EBCDIC</span>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <h4>Real-World Examples:</h4>
+                        Data encryption, image/video compression, character encoding conversion
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layer layer-5">
+                <div class="layer-header">
+                    <div class="layer-number">5</div>
+                    <div class="layer-title">
+                        <h2 class="layer-name">Session Layer</h2>
+                        <p class="layer-subtitle">Session Management</p>
+                    </div>
+                </div>
+                <div class="layer-content">
+                    <div class="layer-description">
+                        Establishes, manages, and terminates connections between applications. Controls dialogues and keeps sessions separate.
+                    </div>
+                    <div class="protocols">
+                        <h4>Common Protocols:</h4>
+                        <div class="protocol-list">
+                            <span class="protocol-tag">NetBIOS</span>
+                            <span class="protocol-tag">RPC</span>
+                            <span class="protocol-tag">PPTP</span>
+                            <span class="protocol-tag">L2TP</span>
+                            <span class="protocol-tag">SQL Sessions</span>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <h4>Real-World Examples:</h4>
+                        Login sessions, database connections, video conferencing coordination
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layer layer-4">
+                <div class="layer-header">
+                    <div class="layer-number">4</div>
+                    <div class="layer-title">
+                        <h2 class="layer-name">Transport Layer</h2>
+                        <p class="layer-subtitle">End-to-End Communication</p>
+                    </div>
+                </div>
+                <div class="layer-content">
+                    <div class="layer-description">
+                        Provides reliable data transfer services. Handles error detection, flow control, and data segmentation. Ensures complete data transfer.
+                    </div>
+                    <div class="protocols">
+                        <h4>Common Protocols:</h4>
+                        <div class="protocol-list">
+                            <span class="protocol-tag">TCP</span>
+                            <span class="protocol-tag">UDP</span>
+                            <span class="protocol-tag">SPX</span>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <h4>Key Functions:</h4>
+                        Segmentation, error correction, flow control, port addressing, reliable delivery
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layer layer-3">
+                <div class="layer-header">
+                    <div class="layer-number">3</div>
+                    <div class="layer-title">
+                        <h2 class="layer-name">Network Layer</h2>
+                        <p class="layer-subtitle">Routing & Path Determination</p>
+                    </div>
+                </div>
+                <div class="layer-content">
+                    <div class="layer-description">
+                        Routes data packets between different networks. Determines the best path for data to travel from source to destination.
+                    </div>
+                    <div class="protocols">
+                        <h4>Common Protocols:</h4>
+                        <div class="protocol-list">
+                            <span class="protocol-tag">IP</span>
+                            <span class="protocol-tag">ICMP</span>
+                            <span class="protocol-tag">OSPF</span>
+                            <span class="protocol-tag">BGP</span>
+                            <span class="protocol-tag">RIP</span>
+                            <span class="protocol-tag">IPX</span>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <h4>Key Functions:</h4>
+                        IP addressing, routing, packet forwarding, path determination
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layer layer-2">
+                <div class="layer-header">
+                    <div class="layer-number">2</div>
+                    <div class="layer-title">
+                        <h2 class="layer-name">Data Link Layer</h2>
+                        <p class="layer-subtitle">Node-to-Node Communication</p>
+                    </div>
+                </div>
+                <div class="layer-content">
+                    <div class="layer-description">
+                        Provides error-free transfer of data frames between two directly connected nodes. Handles MAC addressing and error detection.
+                    </div>
+                    <div class="protocols">
+                        <h4>Common Protocols:</h4>
+                        <div class="protocol-list">
+                            <span class="protocol-tag">Ethernet</span>
+                            <span class="protocol-tag">Wi-Fi (802.11)</span>
+                            <span class="protocol-tag">PPP</span>
+                            <span class="protocol-tag">Frame Relay</span>
+                            <span class="protocol-tag">ATM</span>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <h4>Key Functions:</h4>
+                        MAC addressing, frame synchronization, error detection, flow control
+                    </div>
+                </div>
+            </div>
+            
+            <div class="layer layer-1">
+                <div class="layer-header">
+                    <div class="layer-number">1</div>
+                    <div class="layer-title">
+                        <h2 class="layer-name">Physical Layer</h2>
+                        <p class="layer-subtitle">Hardware & Transmission</p>
+                    </div>
+                </div>
+                <div class="layer-content">
+                    <div class="layer-description">
+                        Transmits raw bit streams over physical media. Defines electrical, mechanical, and timing specifications for network hardware.
+                    </div>
+                    <div class="protocols">
+                        <h4>Physical Media & Standards:</h4>
+                        <div class="protocol-list">
+                            <span class="protocol-tag">Ethernet Cables</span>
+                            <span class="protocol-tag">Fiber Optic</span>
+                            <span class="protocol-tag">Wireless Radio</span>
+                            <span class="protocol-tag">Bluetooth</span>
+                            <span class="protocol-tag">USB</span>
+                        </div>
+                    </div>
+                    <div class="examples">
+                        <h4>Real-World Examples:</h4>
+                        Cables, hubs, repeaters, network adapters, wireless access points
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="data-flow">
+            <h3>Data Flow Direction</h3>
+            <div>
+                <strong>Sending:</strong> Application (7) → Physical (1)
+                <div class="flow-arrow">↓</div>
+                <strong>Receiving:</strong> Physical (1) → Application (7)
+                <div class="flow-arrow">↑</div>
+            </div>
+            <p><em>Each layer adds/removes its own header information (encapsulation/decapsulation)</em></p>
+        </div>
+    </div>
+</body>
+</html>
